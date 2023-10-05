@@ -2,3 +2,5 @@ bin/
 temp/
 .vs/
 FluidX3D.vcxproj.user
+zig-cache/
+zig-out/

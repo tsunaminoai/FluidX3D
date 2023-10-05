@@ -57,26 +57,26 @@ const GraphicsOptions = struct {
 
 //   #define BENCHMARK // disable all extensions and setups and run benchmark setup instead
 
-const CellType = union(u8) {
-    TYPE_S: 0b00000001, // (stationary or moving) solid boundary
-    TYPE_E: 0b00000010, // equilibrium boundary (inflow/outflow)
-    TYPE_T: 0b00000100, // temperature boundary
-    TYPE_F: 0b00001000, // fluid
-    TYPE_I: 0b00010000, // interface
-    TYPE_G: 0b00100000, // gas
-    TYPE_X: 0b01000000, // reserved type X
-    TYPE_Y: 0b10000000, // reserved type Y
+const CellType = enum(u8) {
+    TYPE_S = 0b00000001, // (stationary or moving) solid boundary
+    TYPE_E = 0b00000010, // equilibrium boundary (inflow/outflow)
+    TYPE_T = 0b00000100, // temperature boundary
+    TYPE_F = 0b00001000, // fluid
+    TYPE_I = 0b00010000, // interface
+    TYPE_G = 0b00100000, // gas
+    TYPE_X = 0b01000000, // reserved type X
+    TYPE_Y = 0b10000000, // reserved type Y
 };
 
-const Visualization_Mode = union(u8) {
-    VIS_FLAG_LATTICE: 0b00000001,
-    VIS_FLAG_SURFACE: 0b00000010,
-    VIS_FIELD: 0b00000100,
-    VIS_STREAMLINES: 0b00001000,
-    VIS_Q_CRITERION: 0b00010000,
-    VIS_PHI_RASTERIZE: 0b00100000,
-    VIS_PHI_RAYTRACE: 0b01000000,
-    VIS_PARTICLES: 0b10000000,
+const Visualization_Mode = enum(u8) {
+    VIS_FLAG_LATTICE = 0b00000001,
+    VIS_FLAG_SURFACE = 0b00000010,
+    VIS_FIELD = 0b00000100,
+    VIS_STREAMLINES = 0b00001000,
+    VIS_Q_CRITERION = 0b00010000,
+    VIS_PHI_RASTERIZE = 0b00100000,
+    VIS_PHI_RAYTRACE = 0b01000000,
+    VIS_PARTICLES = 0b10000000,
 };
 
 const FPXX = enum {
@@ -84,15 +84,19 @@ const FPXX = enum {
     float,
 };
 
-const Configuration = struct {
+pub const Configuration = struct {
     velocity: VelocitySet,
     relax: RelaxationTime,
     fpc: ?FloatingPointCompresson,
     fpx: FPXX = FPXX.float,
     graphics: ?GraphicsMode,
-    goptions: GraphicsOptions,
+    goptions: ?GraphicsOptions,
     options: GlobalOptions,
     visuals: ?Visualization_Mode,
+
+    pub fn defaults() Configuration {
+        return Configuration{ .velocity = VelocitySet.D3Q19, .relax = RelaxationTime.SRT, .fpc = null, .fpx = FPXX.float, .graphics = null, .goptions = null, .options = GlobalOptions.init(), .visuals = null };
+    }
 
     pub fn setFloatingPointCompression(self: *Configuration, fpc: FloatingPointCompresson) void {
         self.fpc = fpc;
@@ -132,5 +136,8 @@ const Configuration = struct {
     pub fn setGraphicsMode(self: *Configuration, mode: GraphicsMode) void {
         self.graphics = mode;
         self.options.UPDATE_FIELDS = true;
+        if (!self.goptions) {
+            self.goptions = GraphicsOptions.init();
+        }
     }
 };

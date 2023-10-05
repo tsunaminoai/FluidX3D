@@ -1,23 +1,23 @@
 const std = @import("std");
 
-const VelocitySet = enum {
+pub const VelocitySet = enum {
     D2Q9, // choose D2Q9 velocity set for 2D; allocates 53 (FP32) or 35 (FP16) Bytes/cell
     D3Q15, // choose D3Q15 velocity set for 3D; allocates 77 (FP32) or 47 (FP16) Bytes/cell
     D3Q19, // choose D3Q19 velocity set for 3D; allocates 93 (FP32) or 55 (FP16) Bytes/cell; (default)
     D3Q27, // choose D3Q27 velocity set for 3D; allocates 125 (FP32) or 71 (FP16) Bytes/cell
 };
 
-const RelaxationTime = enum {
+pub const RelaxationTime = enum {
     SRT, // choose single-relaxation-time LBM collision operator; (default)
     TRT, // choose two-relaxation-time LBM collision operator
 };
 
-const FloatingPointCompresson = enum {
+pub const FloatingPointCompresson = enum {
     FP16S, // compress LBM DDFs to range-shifted IEEE-754 FP16; number conversion is done in hardware; all arithmetic is still done in FP32
     FP16C, // compress LBM DDFs to more accurate custom FP16C format; number conversion is emulated in software; all arithmetic is still done in FP32
 };
 
-const GlobalOptions = struct {
+pub const GlobalOptions = struct {
     VOLUME_FORCE: bool = false, // enables global force per volume in one direction (equivalent to a pressure gradient); specified in the LBM class constructor; the force can be changed on-the-fly between time steps at no performance cost
     FORCE_FIELD: bool = false, // enables computing the forces on solid boundaries with lbm.calculate_force_on_boundaries(); and enables setting the force for each lattice point independently (enable VOLUME_FORCE too); allocates an extra 12 Bytes/cell
     EQUILIBRIUM_BOUNDARIES: bool = false, // enables fixing the velocity/density by marking cells with TYPE_E; can be used for inflow/outflow; does not reflect shock waves
@@ -32,13 +32,13 @@ const GlobalOptions = struct {
     }
 };
 
-const GraphicsMode = enum {
+pub const GraphicsMode = enum {
     Interactive,
     Ascii,
     Console,
 };
 
-const GraphicsOptions = struct {
+pub const GraphicsOptions = struct {
     GRAPHICS_FRAME_WIDTH: u32 = 1920, // set frame width if only GRAPHICS is enabled
     GRAPHICS_FRAME_HEIGHT: u32 = 1080, // set frame height if only GRAPHICS is enabled
     GRAPHICS_BACKGROUND_COLOR: u32 = 0x000000, // set background color; black background (default) = 0x000000, white background = 0xFFFFFF
@@ -55,9 +55,7 @@ const GraphicsOptions = struct {
     }
 };
 
-//   #define BENCHMARK // disable all extensions and setups and run benchmark setup instead
-
-const CellType = enum(u8) {
+pub const CellType = enum(u8) {
     TYPE_S = 0b00000001, // (stationary or moving) solid boundary
     TYPE_E = 0b00000010, // equilibrium boundary (inflow/outflow)
     TYPE_T = 0b00000100, // temperature boundary
@@ -68,7 +66,7 @@ const CellType = enum(u8) {
     TYPE_Y = 0b10000000, // reserved type Y
 };
 
-const Visualization_Mode = enum(u8) {
+pub const Visualization_Mode = enum(u8) {
     VIS_FLAG_LATTICE = 0b00000001,
     VIS_FLAG_SURFACE = 0b00000010,
     VIS_FIELD = 0b00000100,
@@ -79,7 +77,7 @@ const Visualization_Mode = enum(u8) {
     VIS_PARTICLES = 0b10000000,
 };
 
-const FPXX = enum {
+pub const FPXX = enum {
     ushort,
     float,
 };
